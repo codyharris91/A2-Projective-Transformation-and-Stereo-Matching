@@ -4,6 +4,14 @@
 
 ### How to Use
 
-Windows:
+python homography.py [city_image] [image_to_put_on_billboard] [output_name]
 
-python homography.py [billboard_image] [image_to_put_on_billboard]
+1. A window will pop-up with the image with blank billboards
+2. Double click the corners of the empty billboard
+3. Type 'Enter' when you have clicked exactly 4 corners. (If you click more or less points, the program will terminate)
+4. The billboard image with your new image will be displayed to the screen as well as saved to the /output folder.
+
+### Examples
+
+python homography.py input_images/part1/input/target/empty_bilboard4.jpg input_images/part1/input/source/gcat.jpg grumpycat
+
