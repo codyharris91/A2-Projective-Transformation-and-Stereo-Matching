@@ -29,3 +29,14 @@ python homography.py input_images/part1/input/target/empty_bilboard2.jpg input_i
 
 OpenCV was used to annotate the image to have the 4 corners of an empty billboard marked.
 
+The four points were then ordered so that they would match the following pattern, where the number shown is the index of the point.
+
+0 > 1
+4 < 2
+
+This was neccessary so that the top left corner was always mapped to the top left corner of the billboard image. The points for the corners of the image being put on the billboard were just built using the following method using the width and height of the image:
+
+((0, 0), (bb_width, 0), (bb_width, bb_height), (0, bb_height))
+
+
+
