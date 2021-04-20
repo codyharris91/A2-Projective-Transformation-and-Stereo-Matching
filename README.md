@@ -15,3 +15,4 @@ python homography.py [city_image] [image_to_put_on_billboard] [output_name]
 
 python homography.py input_images/part1/input/target/empty_bilboard4.jpg input_images/part1/input/source/gcat.jpg grumpycat
 
+![example1](/examples/grumpycat.png)
