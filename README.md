@@ -24,3 +24,8 @@ python homography.py input_images/part1/input/target/empty_bilboard1.jpg input_i
 python homography.py input_images/part1/input/target/empty_bilboard2.jpg input_images/part1/input/source/happy_minions2.png minion2 
 
 ![example3](/examples/minion2.png)
+
+### Implementation Details
+
+OpenCV was used to annotate the image to have the 4 corners of an empty billboard marked.
+
