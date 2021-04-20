@@ -16,6 +16,7 @@ import sys
 import os
 import cv2
 import numpy as np
+from PIL import Image
 
 def draw_circle(event, x, y, flags, param):
     height = param[0].shape[0]
@@ -70,12 +71,12 @@ def solve_h(p, p_prime):
             A = np.concatenate((A, p_i))
     last = np.array([0, 0, 0, 0, 0, 0, 0, 0, 1])
     A = np.append(A, [last], axis = 0)
-    return A.reshape((3,3))
+    return A
 
 def get_new_xy(x, y, h):
     pretrans = h.dot([x,y,1])
     loc = pretrans/pretrans[2]
-    return (loc[0], loc[1])
+    return (round(loc[0]), round(loc[1]))
 
 def main():
     ny_file = sys.argv[1]
@@ -92,11 +93,11 @@ def main():
     y_vals = []
 
     param = [image, x_vals, y_vals]
-    cv2.namedWindow('Image mouse')
-    cv2.setMouseCallback('Image mouse', draw_circle, param)
+    cv2.namedWindow('Double Click Four Corners. Hit Enter when Done or to Quit')
+    cv2.setMouseCallback('Double Click Four Corners. Hit Enter when Done or to Quit', draw_circle, param)
 
     while True:
-        cv2.imshow('Image mouse', image)
+        cv2.imshow('Double Click Four Corners. Hit Enter when Done or to Quit', image)
  
         if cv2.waitKey(20) & 0xFF == ord('\x0D'):
             break
@@ -104,17 +105,35 @@ def main():
     if len(x_vals) != 4:
         raise Exception('Please Click Exactly 4 Corners')
 
-
     # Corner order:
     # 1 > 2
     # 4 < 3
     ny_corn = make_xy(x_vals, y_vals)
     bb_corn = ((0, 0), (bb_width, 0), (bb_width, bb_height), (0, bb_height))
-
+    #print(ny_corn)
+    #print(bb_corn)
     homog = solve_h(bb_corn, ny_corn)
+    b = np.array([0, 0, 0, 0, 0, 0, 0, 0, 1])
+    x, residuals, rank, s = np.linalg.lstsq(homog,b,rcond=None)
+    H = x.reshape((3,3))
+    print(H)
 
-    print(ny_corn)
-    print(bb_corn)
+    pil_img_ny = Image.open(sys.argv[1]).convert('RGB')
+    pil_img_bb = Image.open(sys.argv[2]).convert('RGB')
+    
+    ny_img_arr = np.array(pil_img_ny)
+    bb_img_arr = np.array(pil_img_bb)
+
+    for width in range(bb_width):
+        for height in range(bb_height):
+            color = bb_img_arr[height][width]
+            new_point = get_new_xy(width, height, H)
+            pil_img_ny.putpixel(new_point, tuple(color))
+            if width == 5 and height == 5:
+                print(new_point, color)
+
+    pil_img_ny.show()
+
 
 
 
