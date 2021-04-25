@@ -7,10 +7,6 @@
 # Neelan Schueman
 # Emma Cai
 #
-# OpenCV Ideas for annotation taken from:
-# https://automaticaddison.com/how-to-annotate-images-using-opencv/
-# Some small snippets of code are directly copied, and some ideas
-# are applied from the sample code.
 
 import sys
 import os
@@ -18,6 +14,10 @@ import cv2
 import numpy as np
 from PIL import Image
 
+# OpenCV Ideas for annotation taken from:
+# https://automaticaddison.com/how-to-annotate-images-using-opencv/
+# Some small snippets of code are directly copied, and some ideas
+# are applied from the sample code.
 def draw_circle(event, x, y, flags, param):
     height = param[0].shape[0]
     width = param[0].shape[1]
@@ -78,16 +78,35 @@ def get_new_xy(x, y, h):
     loc = pretrans/pretrans[2]
     return (round(loc[0]), round(loc[1]))
 
+def get_min_max(c):
+    xmin = 0
+    xmax = 0
+    ymin = 0
+    ymax = 0
+    for p in c:
+        if p[0] < xmin:
+            xmin = p[0]
+        if p[0] > xmax:
+            xmax = p[0]
+        if p[1] < ymin:
+            ymin = p[1]
+        if p[1] > ymax:
+            ymax = p[1]
+    return xmin, xmax, ymin, ymax
+
+
 def main():
     ny_file = sys.argv[1]
     bb_file = sys.argv[2]
+    output = sys.argv[3]
 
-    #Source: https://www.kite.com/python/examples/4300/os-remove-the-file-extension-from-a-filename
-    output = os.path.splitext(ny_file)[0] + '_output.jpg'
     image = cv2.imread(ny_file, -1)
     bb_img = cv2.imread(bb_file, -1)
     bb_height = bb_img.shape[0]
     bb_width = bb_img.shape[1]
+
+    ny_height = image.shape[0]
+    ny_width = image.shape[1]
 
     x_vals = []
     y_vals = []
@@ -110,13 +129,11 @@ def main():
     # 4 < 3
     ny_corn = make_xy(x_vals, y_vals)
     bb_corn = ((0, 0), (bb_width, 0), (bb_width, bb_height), (0, bb_height))
-    #print(ny_corn)
-    #print(bb_corn)
+
     homog = solve_h(bb_corn, ny_corn)
     b = np.array([0, 0, 0, 0, 0, 0, 0, 0, 1])
-    x, residuals, rank, s = np.linalg.lstsq(homog,b,rcond=None)
-    H = x.reshape((3,3))
-    print(H)
+    x, _, _, _ = np.linalg.lstsq(homog,b,rcond=None)
+    H = np.linalg.inv(x.reshape((3,3)))
 
     pil_img_ny = Image.open(sys.argv[1]).convert('RGB')
     pil_img_bb = Image.open(sys.argv[2]).convert('RGB')
@@ -124,37 +141,18 @@ def main():
     ny_img_arr = np.array(pil_img_ny)
     bb_img_arr = np.array(pil_img_bb)
 
-    for width in range(bb_width):
-        for height in range(bb_height):
-            color = bb_img_arr[height][width]
+    xmin, xmax, ymin, ymax = get_min_max(ny_corn)
+
+    for width in range(xmin,xmax):
+        for height in range(ymin,ymax):
             new_point = get_new_xy(width, height, H)
-            pil_img_ny.putpixel(new_point, tuple(color))
-            if width == 5 and height == 5:
-                print(new_point, color)
+            if new_point[0] > 0 and new_point[0] < bb_width-1 and new_point[1] > 0 and new_point[1] < bb_height-1:
+                color = bb_img_arr[new_point[1]][new_point[0]]
+                pil_img_ny.putpixel((width, height), tuple(color))
 
     pil_img_ny.show()
-
-
-
-
-
-
-
-
+    pil_img_ny.save('output/' + output + '.png')
 
 if __name__ == '__main__':
     main()
-
-
-
-
-
-
-
-
-
-
-
-
-
 
