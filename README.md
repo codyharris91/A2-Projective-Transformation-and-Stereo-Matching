@@ -2,6 +2,11 @@
 
 ## Part 1: Putting Happy Minions Faces on Empty Billboards of Times Square
 
+### Work Split
+
+-Emma: OpenCV annotation  
+-Cody: Rest of program
+
 ### How to Use
 
 python homography.py [city_image] [image_to_put_on_billboard] [output_name]
@@ -40,16 +45,4 @@ This was neccessary so that the top left corner was always mapped to the top lef
 
 ### Putting Pixels on the Board
 
-Instead of grabbing each pixel from the image that is being pasted on the billboard and translating it to the target image, we take the inverse of the matrix and loop through the target image to find what pixels map to the billboard image. If we do not do this, then there will be white pixels if the image we are putting on the billboard is smaller than the actual area it is being applied to.
-
-This leads to the equation as follows:
-
-
-
-<img src="https://render.githubusercontent.com/render/math?math=\begin{bmatrix}
-a & b & c \\
-d & e & f \\
-g & g & 1 
-\end{bmatrix}">
-
-<img src="https://latex.codecogs.com/gif.latex?O_t=\text { Onset event at time bin } t " /> 
+Instead of grabbing each pixel from the image that is being pasted on the billboard and translating it to the target image, we take the inverse of the H matrix and loop through the target image to find what pixels map to the billboard image. If we do not do this, then there will be white pixels if the image we are putting on the billboard is smaller than the actual area it is being applied to.
