@@ -2,6 +2,11 @@
 
 ## Part 1: Putting Happy Minions Faces on Empty Billboards of Times Square
 
+### Work Split
+
+-Emma: OpenCV annotation  
+-Cody: Rest of program
+
 ### How to Use
 
 python homography.py [city_image] [image_to_put_on_billboard] [output_name]
@@ -31,12 +36,13 @@ OpenCV was used to annotate the image to have the 4 corners of an empty billboar
 
 The four points were then ordered so that they would match the following pattern, where the number shown is the index of the point.
 
-0 > 1
+0 > 1  
 4 < 2
 
 This was neccessary so that the top left corner was always mapped to the top left corner of the billboard image. The points for the corners of the image being put on the billboard were just built using the following method using the width and height of the image:
 
 ((0, 0), (bb_width, 0), (bb_width, bb_height), (0, bb_height))
 
+### Putting Pixels on the Board
 
-
+Instead of grabbing each pixel from the image that is being pasted on the billboard and translating it to the target image, we take the inverse of the H matrix and loop through the target image to find what pixels map to the billboard image. If we do not do this, then there will be white pixels if the image we are putting on the billboard is smaller than the actual area it is being applied to.
