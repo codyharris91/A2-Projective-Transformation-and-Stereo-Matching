@@ -44,9 +44,12 @@ Instead of grabbing each pixel from the image that is being pasted on the billbo
 
 This leads to the equation as follows:
 
-\begin{bmatrix}
+
+
+<img src="https://render.githubusercontent.com/render/math?math=\begin{bmatrix}
 a & b & c \\
 d & e & f \\
 g & g & 1 
-\end{bmatrix}
+\end{bmatrix}">
 
+<img src="https://latex.codecogs.com/gif.latex?O_t=\text { Onset event at time bin } t " /> 
