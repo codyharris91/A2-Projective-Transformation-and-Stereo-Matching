@@ -38,5 +38,15 @@ This was neccessary so that the top left corner was always mapped to the top lef
 
 ((0, 0), (bb_width, 0), (bb_width, bb_height), (0, bb_height))
 
+### Putting Pixels on the Board
 
+Instead of grabbing each pixel from the image that is being pasted on the billboard and translating it to the target image, we take the inverse of the matrix and loop through the target image to find what pixels map to the billboard image. If we do not do this, then there will be white pixels if the image we are putting on the billboard is smaller than the actual area it is being applied to.
+
+This leads to the equation as follows:
+
+\begin{bmatrix}
+a & b & c \\
+d & e & f \\
+g & g & 1 
+\end{bmatrix}
 
